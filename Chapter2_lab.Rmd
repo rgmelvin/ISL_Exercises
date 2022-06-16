@@ -1,0 +1,1580 @@
+---
+title: "ISL Chapter 2 Lab"
+author: "Richard G. Melvin"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I this lab we are introduced to some simple R commands.
+
+### **2.3.1**
+
+R uses functions to perform operations. Functions are run by calling them: `function(input1, input2)` where the inputs (called *arguments*) tell R how to run the function.
+
+For example to create a vector of numbers we use the funtion `c()` (*concatenate*). Numbers inside the parentheses are joined into a *vector*.
+
+Join together the numbers 1, 3, 2, 5, and save them to a *vector* named *x*. Type x to get back the vector.
+
+```{r}
+x <- c(1, 3, 2, 5)
+x
+```
+
+Saving items to an object can also be done using = rather than \<-:
+
+```{r}
+x = c(1, 6, 2)
+x
+```
+
+```{r}
+y = c(1, 4, 3)
+y
+```
+
+Pressing the *up* arrow on the keyboard will display previous commands, which can be edited. This is useful since commands can be repeated and edited.
+
+Typing `?functionname` will cause R to open a help window about `functionname()` .
+
+R can add two sets of numbers together if the sets are of the same length.
+
+We can check the length of a set of numbers (a vector) using the `length()` function.
+
+```{r}
+length(x)
+```
+
+```{r}
+length(y)
+```
+
+```{r}
+x + y
+```
+
+The `ls()` function allows looking at a list of all objects, such as data and functions, that we have saved so far.
+
+```{r}
+ls()
+```
+
+The `rm()` function can be used to delete any that we don't want.
+
+```{r}
+rm(x, y)
+ls()
+```
+
+it is also possible to completely remove all objects at once instead of one at a time:
+
+```{r}
+rm(list = ls())
+ls()
+```
+
+The `matrix()` function can be used to create a matrix of numbers.
+
+```{r}
+?matrix
+```
+
+## Matrices
+
+### Description
+
+`matrix` creates a matrix from the given set of values.
+
+`as.matrix` attempts to turn its argument into a matrix.
+
+`is.matrix` tests if its argument is a (strict) matrix.
+
+### Usage
+
+    matrix(data = NA, nrow = 1, ncol = 1, byrow = FALSE,
+           dimnames = NULL)
+
+    as.matrix(x, ...)
+    ## S3 method for class 'data.frame'
+    as.matrix(x, rownames.force = NA, ...)
+
+    is.matrix(x)
+
+### Arguments
+
+| `data`           | an optional data vector (including a list or[`expression`](http://127.0.0.1:54778/help/library/base/help/expression) vector). Non-atomic classed **R**objects are coerced by [`as.vector`](http://127.0.0.1:54778/help/library/base/help/as.vector) and all attributes discarded.                                                            |
+|-------------------|-----------------------------------------------------|
+| `nrow`           | the desired number of rows.                                                                                                                                                                                                                                                                                                                  |
+| `ncol`           | the desired number of columns.                                                                                                                                                                                                                                                                                                               |
+| `byrow`          | logical. If `FALSE` (the default) the matrix is filled by columns, otherwise the matrix is filled by rows.                                                                                                                                                                                                                                   |
+| `dimnames`       | A [`dimnames`](http://127.0.0.1:54778/help/library/base/help/dimnames) attribute for the matrix: `NULL` or a `list` of length 2 giving the row and column names respectively. An empty list is treated as `NULL`, and a list of length one as row names. The list can be named, and the list names will be used as names for the dimensions. |
+| `x`              | an **R** object.                                                                                                                                                                                                                                                                                                                             |
+| `...`            | additional arguments to be passed to or from methods.                                                                                                                                                                                                                                                                                        |
+| `rownames.force` | logical indicating if the resulting matrix should have character (rather than `NULL`) [`rownames`](http://127.0.0.1:54778/help/library/base/help/rownames). The default, `NA`, uses `NULL` rownames if the data frame has 'automatic' row.names or for a zero-row data frame.                                                                |
+
+### Details
+
+If one of `nrow` or `ncol` is not given, an attempt is made to infer it from the length of `data` and the other parameter. If neither is given, a one-column matrix is returned.
+
+If there are too few elements in `data` to fill the matrix, then the elements in `data` are recycled. If `data` has length zero, `NA` of an appropriate type is used for atomic vectors (`0` for raw vectors) and `NULL` for lists.
+
+`is.matrix` returns `TRUE` if `x` is a vector and has a `"dim"` attribute of length 2 and `FALSE` otherwise. Note that a [`data.frame`](http://127.0.0.1:54778/help/library/base/help/data.frame) is **not** a matrix by this test. The function is generic: you can write methods to handle specific classes of objects, see [InternalMethods](http://127.0.0.1:54778/help/library/base/help/InternalMethods).
+
+`as.matrix` is a generic function. The method for data frames will return a character matrix if there is only atomic columns and any non-(numeric/logical/complex) column, applying [`as.vector`](http://127.0.0.1:54778/help/library/base/help/as.vector) to factors and [`format`](http://127.0.0.1:54778/help/library/base/help/format) to other non-character columns. Otherwise, the usual coercion hierarchy (logical \< integer \< double \< complex) will be used, e.g., all-logical data frames will be coerced to a logical matrix, mixed logical-integer will give a integer matrix, etc.
+
+The default method for `as.matrix` calls `as.vector(x)`, and hence e.g. coerces factors to character vectors.
+
+When coercing a vector, it produces a one-column matrix, and promotes the names (if any) of the vector to the rownames of the matrix.
+
+`is.matrix` is a [primitive](http://127.0.0.1:54778/help/library/base/help/primitive) function.
+
+The `print` method for a matrix gives a rectangular layout with dimnames or indices. For a list matrix, the entries of length not one are printed in the form '⁠integer,7⁠' indicating the type and length.
+
+### Note
+
+If you just want to convert a vector to a matrix, something like
+
+      dim(x) <- c(nx, ny)
+      dimnames(x) <- list(row_names, col_names)
+
+will avoid duplicating `x` *and* preserve [`class`](http://127.0.0.1:54778/help/library/base/help/class)`(x)` which may be useful, e.g., for [`Date`](http://127.0.0.1:54778/help/library/base/help/Date) objects.
+
+### References
+
+Becker, R. A., Chambers, J. M. and Wilks, A. R. (1988) *The New S Language*. Wadsworth & Brooks/Cole.
+
+### See Also
+
+[`data.matrix`](http://127.0.0.1:54778/help/library/base/help/data.matrix), which attempts to convert to a numeric matrix.
+
+A matrix is the special case of a two-dimensional [`array`](http://127.0.0.1:54778/help/library/base/help/array). Since **R** 4.0.0, [`inherits`](http://127.0.0.1:54778/help/library/base/help/inherits)`(m, "array")` is true for a `matrix` `m`.
+
+### Examples
+
+[Run examples](http://127.0.0.1:54778/help/library/base/Example/matrix)
+
+    is.matrix(as.matrix(1:10))
+    !is.matrix(warpbreaks)  # data.frame, NOT matrix!
+    warpbreaks[1:10,]
+    as.matrix(warpbreaks[1:10,])  # using as.matrix.data.frame(.) method
+
+    ## Example of setting row and column names
+    mdat <- matrix(c(1,2,3, 11,12,13), nrow = 2, ncol = 3, byrow = TRUE,
+                   dimnames = list(c("row1", "row2"),
+                                   c("C.1", "C.2", "C.3")))
+    mdat
+
+The matrix function takes a number of inputs. Here we will concentrate first on data, nrow, and ncol. Creating a simple matrix:
+
+```{r}
+x <- matrix(data = c(1, 2, 3, 4), nrow = 2, ncol = 2)
+x
+```
+
+Note that you can forego typing `data=`, `nrow=`, and `ncol=` in the matrix() command and achieve the same result:
+
+```{r}
+x <- matrix(c(1, 2, 3, 4), 2, 2)
+x
+```
+
+However, it is often useful to specify the names of the arguments that are passed in since R will assume that arguments are passed in in exactly the same order as that given by the function's help file.
+
+As observed above, the default method of filling matrices is by filling in columns. Alternatively, setting `byrow= TRUE` will cause the matrix to be populated in the order of rows.
+
+```{r}
+matrix(c(1, 2, 3, 4), 2, 2, byrow = TRUE)
+```
+
+In the above command the matrix was not saved to an object. In this case the matrix is printed to the screen but is not saved to be called in future calculations.
+
+The `sqr()` function will return the square root of each element in a vector or matrix.
+
+The command *x\^2* raises each element of x to the power of 2; any powers are possible including fractional and negative powers.
+
+```{r}
+sqrt(x)
+```
+
+```{r}
+x^2
+```
+
+The `rnorm()` function generates a vector of random normal variables. The first argument of the function is `n` the sample size. Each time that you call `rnorm()` a different answer will be returned.
+
+Below, we create two correlated sets of numbers, x and y, and use the cor() function to compute correlation between them.
+
+```{r}
+x <- rnorm(50)
+y <- x + rnorm(50, mean = 50, sd = 0.1)
+cor(x, y)
+```
+
+By default, `rnorm()` creates standard normal random variables with mean = 0 and standard deviation of 1. However, the values of mean and standard deviation can b altered using the `mean` and `sd` arguments, as illustrated above
+
+At times we will want our code to produce exactly the same set of random numbers over and over; we can use the `set.seed()` function to do this. `set.seed()` takes an (arbitrary) integer argument.
+
+```{r}
+set.seed(1303)
+rnorm(50)
+```
+
+The `set.seed()` function is used in ISL labs whenever calculations involving random quantities are performed. This allows us to reproduce the results in the book.
+
+The `mean()` and `var()` functions can be used to compute mean and variance of a vector of numbers. Applying `sqrt()` to the output of `var()` will give the standard deviation or, simply use the `sd()` function.
+
+```{r}
+set.seed(3)
+y <- rnorm(100)
+mean(y)
+```
+
+```{r}
+var(y)
+```
+
+```{r}
+sqrt(var(y))
+```
+
+```{r}
+sd(y)
+```
+
+### **2.3.3 Graphics**
+
+The `plot()` function is the primary way to plot data in R. For example, `plot(x, y)` will produce a scatter plot of the numbers `x` versus the numbers `y` .
+
+Many additional options can be passed in to the `plot()` function. For example passing in the argument `xlab` will place a label on the *x-axis.* More information about `plot()` can be found by typing `?plot.`
+
+```{r}
+x <- rnorm(100)
+y <- rnorm(100)
+plot(x, y)
+```
+
+```{r}
+plot(x, y, xlab =  "this is the x-axis",
+     ylab = "this is the y-axis",
+     main = "Plot of X vs  Y")
+```
+
+We will often want to save graphical output. The command depends on the type of file that we want to save. The `pdf()` function saves a pdf file and the `jpeg()` function saves a jpeg.
+
+```{r}
+pdf("Figure.pdf")
+plot(x, y, col = "green")
+dev.off()
+```
+
+The function `dev.off()` indicates to R that we are done creating the plot.
+
+Alternatively, the plot window can be copied and pasted into a Word document.
+
+The function `seq()` can be used to create a sequence of numbers. For example `seq(a, b)` makes a vector of integers between `a` and `b`. There are many other options:
+
+-   `seq(0, 1, length = 10)` makes a sequence of 10 equally spaced numbers between 0 and 1.
+
+-   `3:11` is a shorthand way of typing `seq(3, 11)` for integer arguments.
+
+    ```{r}
+    x <- seq(1, 10)
+    x
+    ```
+
+```{r}
+x <- 1:10
+x
+```
+
+```{r}
+x <- seq(-pi, pi, length = 50)
+x
+```
+
+More sophisticated plots:
+
+The `contour()` function produces a *contour* *plot* that represents three-dimensional data. It takes three arguments:
+
+1.  A vector of the `x` values (dimension 1)
+
+2.  A vector of the `y` values (dimension 2
+
+3.  a matrix whose elements correspond to the `z` value for each pair of (`x`, `y`) coordinates.
+
+There are many options to the `contour()` function that may be viewed by using the `?contour` command.
+
+```{r}
+y <- x
+f <- outer(x, y, function(x, y) cos(y) / (1 + x^2))
+contour(x, y, f)
+contour(x, y, f, nlevels = 45, add = T)
+           
+```
+
+```{r}
+fa <- (f -t(f)) / 2
+contour(x, y, fa, nlevels = 15)
+```
+
+The `image()` function is similar to the `contour()` function, except that it produces a color-coded plot whose colors depend on the `z` value. This type of graphic is called a *heatmap.*
+
+Alternatively, persp() cna be used to produce a three-dimensional plot. Arguments `theta` and phi control the angles at which the plot is viewed.
+
+```{r}
+image(x, y, fa)
+```
+
+```{r}
+persp(x, y, fa)
+```
+
+```{r}
+persp(x, y, fa, theta = 30)
+```
+
+```{r}
+persp(x, y, fa, theta = 30, phi = 20)
+```
+
+```{r}
+persp(x, y, fa, theta = 30, phi = 70)
+
+```
+
+```{r}
+persp(x, y, fa, theta = 30, phi = 40)
+```
+
+### **2.3.3 Indexing Data**
+
+We often wish to examine part of a data set. Suppose that our dat is stored in the matrix A.
+
+```{r}
+A <- matrix(1:16, 4, 4)
+A
+```
+
+We can select the element in the second row and third column:
+
+```{r}
+A[2,3]
+```
+
+The first number after the open-bracket symbol *[* always refers to the row, and the second number always refers to the column. We can also select multiple rows and columns at a time, by providing vectors as the indices.
+
+```{r}
+A[c(1, 3), c(2, 4)]
+```
+
+```{r}
+A[1:3, 2:4]
+```
+
+```{r}
+A[1:2,]
+```
+
+```{r}
+A[,1:2]
+```
+
+In the last two examples, including no index for rows or columns indicates that all rows or all columns should be included.
+
+R treats a single row or column of an array as a vector.
+
+```{r}
+A[1,]
+```
+
+Using a negative sign (-) in the index tells R to keep all rows or columns except those indicated in the index.
+
+```{r}
+A[-c(1, 3), ]
+```
+
+```{r}
+A[-c(1, 3), -c(1, 3, 4)]
+```
+
+```{r}
+dim(A)
+```
+
+### **2.3.4 Loading Data**
+
+To load data you must first navigate to the location of the data on your computer. In this case we want to navigate to `/Users/richardmelvin/Documents/ISL_labs_exercises`. We set this location as our working directory using `setwd() .`
+
+```{r}
+setwd("/Users/richardmelvin/Documents/ISL_labs_exercises")
+list.files()
+```
+
+Next we read in the data using `read.table()` and asign it to an object named `Auto` . Data is loaded in a format that is called a *data frame* .
+
+Once the data is loaded the `View()` function can be used to view it in a spreadsheet-like window.
+
+```{r}
+Auto <- read.table("Auto.data")
+View(Auto)
+```
+
+The `head()` function is used to view the first few rows of data.
+
+```{r}
+head(Auto)
+```
+
+Note that Auto.data is simply a text file. It is often a good idea to view a data set using a text editor.
+
+The Auto data set has not loaded correctly because R has assumed that the variable names are part of the data and so has included them in the first row. A number of missing data points have also been included. If you look at the tab for 'Auto' you will see a few "?" included.
+
+Using `header = T` in the `read.table()` function tells R that the first line of the file contains variable names. Using `na.strings` tells R that any time it encounters a particular character or set of characters (such as the ?) it should be treated like a missing value.
+
+```{r}
+Auto <- read.table("Auto.data", header = T, na.strings = "?", stringsAsFactors =T)
+View(Auto)
+head(Auto)
+```
+
+Now you see that the headers are not included with the data and there are no "?" missing values.
+
+The `stringsAsFactors =T` argument tells R that any variable containing character strings should be interpreted as a qualitative variable, and that each distinct character string represents a distinct level for that qualitative variable.
+
+An easy way to load data from Excel into R is to save it as a .csv file and then use the `read.csv()` function.
+
+```{r}
+Auto <- read.csv("Auto.csv", na.strings = "?", stringsAsFactors = T)
+View(Auto)
+```
+
+```{r}
+dim(Auto)
+```
+
+The dim() function tells us that the data has 397 observations nine variables
+
+```{r}
+Auto[1:4,]
+```
+
+There are various ways to deal with missing observations. We chose to use the `na.omit()` function to remove rows that contain missing values.
+
+```{r}
+Auto <- na.omit(Auto)
+dim(Auto)
+```
+
+There were five rows that contained missing data.
+
+When the data is correctly loaded we can use the names() function to check the variable names.
+
+```{r}
+names(Auto)
+```
+
+### **2.3.5 Additional Graphical and Numerical Summaries**
+
+We can use plot() to produce scatterplots of the quantitative variables. However, simply typing in the variable names will produce an error because R does not know to look in the Auto data set for them.
+
+```{r}
+plot(cylinders, mpg)
+```
+
+To refer to a variable, we have to type the data set and the variable name joined with a `$` symbol.
+
+Alternatively, we can use the `attach()` function to tell R to make the variables in this data frame available by name.
+
+```{r}
+plot(Auto$cylinders, Auto$mpg)
+```
+
+```{r}
+attach(Auto)
+plot(cylinders, mpg)
+```
+
+The `cylinders` variable is stored as a numeric vector, so R treated it as quantitative. However, since there are only a small number of possible values for `cylinders`, it might be preferable to treat it like a qualitative variable. The as.factor() function converts quantitative variables into qualitative variables.
+
+```{r}
+cylinders <- as.factor(cylinders)
+```
+
+If the variable plotted on the x-axis is qualitative, then *boxplots* will be automatically produced by the `plot()` function.
+
+```{r}
+plot(cylinders, mpg)
+```
+
+```{r}
+plot(cylinders, mpg, col = "red")
+```
+
+```{r}
+plot(cylinders, mpg, col= "red", varwidth =T)
+```
+
+```{r}
+plot(cylinders, mpg, col = "red", varwidth = T, horizontal = T)
+```
+
+```{r}
+plot(cylinders, mpg, col = "red", varwidth + T, xlab = "cylinders", ylab = "MPG")
+```
+
+The hist() function can be used to plot a histogram.
+
+Note: col = 2 has the same effect as col = "red".
+
+```{r}
+hist(mpg)
+```
+
+```{r}
+hist(mpg, col = 2)
+```
+
+```{r}
+hist(mpg, col = 2, breaks = 15)
+```
+
+The pairs() function creates a scatterplot matrix.
+
+We can also create scatterplots for just a subset of the variables.
+
+```{r}
+pairs(Auto)
+```
+
+```{r}
+pairs(~mpg + displacement + horsepower + weight + acceleration, data = Auto)
+```
+
+The `identify()` function is an interactive method for identifying the value of a particular variable for points on a plot. The function takes three arguments: the *x-axis* variable, the *y-axis* variable, and the variable whose values are wished to be seen printed for each point. Clicking one or more points in the plot and hitting Escape will cause R to print the values of the variable of interest. The numbers that are printed under `identify()` correspond to the rows for the selected points. Note that this will only work when you are outputting plots to X11 or quartz.
+
+```{r}
+plot(horsepower, mpg)
+identify(horsepower, mpg, name)
+```
+
+The summary() function produces a numerical summary of each variable in the specified data set.
+
+```{r}
+summary(Auto)
+```
+
+You can also produce a summary of a single variable.
+
+```{r}
+summary(mpg)
+```
+
+R is quit using: `q()`
+
+To save a record of the commands that used in the most recent R session:
+
+`savehistory()`
+
+To load the saved command history from the last session:
+
+`loadhistory()`
+
+# 2.4 Exercises
+
+## Conceptual
+
+(1) For each of parts (a) through (d), indicate whether we would generally expect the performance of a flexible statistical learning method to be better or worse than an inflexible method. Justify your answer.
+
+    a.  The sample size *n* is extremely large, and the number of predictors *p* is small.
+
+        -   I think that a flexible statistical learning method would perform better here. With a large sample size a flexible learning model could come closer to the true model, especially if non-linear. I think there is less risk of over-fitting a sample that contains an extremely large set of observations. In otherwords, you would get less bias and perhaps less variance.
+
+    b.  The number of predictors *p* is extremely large, and the number of observations *n* is small.
+
+        -   I think that a flexible statistical learning model would perform worse than in inflexible method here because the risk of bias and over-fitting is high. A flexible model would try to fit the data points closely, the sparse observations would have high variance and overall high bias.
+
+    c.  The relationship between the predictors and the response is highly non-linear.
+
+        -   A flexible statistical learning method will perform better than an inflexible method. The flexible method would the bias that would be inherent to any rigid modeling method.
+
+    d.  The variance of the error terms, i.e. 𝛔^2^ = Var(𝞮), is extremely high.
+
+        -   A flexible statistical learning method would perform worse because the high irreducible error would introduce bias and increase the risk of over-fitting. A less flexible method would resist the bias due to the irreducible error.
+
+(2) Explain whether each scenario is a classification or regression problem, and indicate whether we are most interested in inference or prediction. Finally, provide *n* and *p*.
+
+    a.  We collect a set of data on the top 500 firms in the US. For each firm we record profit, number of employees, industry and the CEO salary. We are interested in understanding which factors affect CEO salary.
+
+        -   This is a **regression** problem in which we are interested in **inferring** how characteristics of the firms affect the salary of the CEO. ***n*** **= 500**, ***p*** **= 3**: {record profit, number of employees, industry}. The output is CEO salary.
+
+    b.  We are considering launching a new product and wish to know whether it will be a successor a *failure*. We collect data on 20 similar products that were previously launched. For each product we have recorded whether it was a success or failure, price charged for the product, marketing budget, competition price, and ten other variables.
+
+        -   This is a **classification** problem in which we want to classify products as either sucessful or failed. We are interested in **predicting** whether our new product will be a success or failure. ***n*** **= 20**, ***p*** **= 13**. Success and failure are the outputs.
+
+    c.  We are interested in predicting the % change in the USD/ Euro exchange rate in relation to the weekly changes in the world stock markets. Hence we collect weekly data for all of 2012. For each week we record the % change in the USD/ Euro, the % change in the US market, the % change in the British market, and the % change in the German market.
+
+        -   This is a **regression** problem in which we are interested in how the USD/ Euro exchange rate is influenced by the world stock markets. We are most interested in **predicting** % change in the USD/ Euro exchange rate. ***n*** **= 52**, ***p*** **= 3**. The output is the weekly % change in USD/ Euro exchange rate.
+
+(3) We now revisit the bias-variance decomposition.
+
+    1.  Provide a sketch of a typical (squared) bias, variance, training error, test error, and Bayes (or irreducible) error curves, on a single plot, as we go from less flexible statistical learning methods towards more flexible approaches. The *x-axis* should represent the amount of flexibility in the method, and the *y-axis* should represent the values for each curve. There should be five curves. Make sure to label each one.
+        -   I can do this in R but I don't know yet how to put all of the plots together in the same frame. I do that in Python below:
+
+    ```{r}
+    par(mfrow = c(3,2))
+    sqr_bias <- function(x) 0.002*(-x + 10)^3
+    variance <- function(x) 0.002 * x^3
+    train_error <- function(x) 2.38936 - 0.825077*x + 0.176655*x^2 - 0.0182319*x^3 + 0.00067091*x^4
+    test_error <- function(x) 3 - 0.6*x + .06*x^2
+    bayes_error <- function(x) x + 1 -x
+    lbound <- 0; ubound <- 10
+    curve(sqr_bias, from = lbound, to = ubound, n = 1000)
+    curve(variance, from = lbound, to = ubound, n = 1000)
+    curve(train_error, from = lbound, to = ubound, n = 1000)
+    curve(test_error, from = lbound, to = ubound, n = 1000)
+    curve(bayes_error, from = lbound, to = ubound, n = 1000)
+    ```
+
+![](images/Ex_2-01.png)
+
+The python code for this plot is here (must install reticulate to run it in Rstudio):
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.arange(0.0, 10.0, 0.02)
+
+def squared_bias(x):
+    return .002*(-x+10)**3
+def variance(x):
+    return .002*x**3
+def training_error(x):
+    return 2.38936 - 0.825077*x + 0.176655*x**2 - 0.0182319*x**3 + 0.00067091*x**4
+def test_error(x):
+    return 3 - 0.6*x + .06*x**2
+def bayes_error(x):
+    return x + 1 -x
+  
+plt.xkcd()
+
+plt.figure(figsize=(10, 8))
+plt.plot(x,squared_bias(x), label='squared bias')
+plt.plot(x, variance(x), label='variance')
+plt.plot(x, training_error(x), label='training error')
+plt.plot(x, test_error(x), label='test error')
+plt.plot(x, bayes_error(x), label='Bayes error')
+plt.legend(loc='upper center')
+plt.xlabel('model flexibility')
+plt.show()
+
+
+```
+
+Code is from: <https://botlnec.github.io/islp/sols/chapter2/exercise3/>
+
+b.  Explain why each of the five curves has the shape displayed in part (a).
+
+    -   **Squared bias**: The squared bias refers to the error introduced by approximating the true function. Simple, linear regression has a high squared-bias because the true data may not fit well to a linear model. As the model increases in flexibility it can fit the data more closely to the true function, thus decreasing the error. Bias generally decreases as flexibility increases.
+
+    -   **Variance**: Variance refers to the amount by which the estimated function varies due to using different sets of training model. If variance is high then small changes in the training data can result in large changes in the function. In general, more flexibility results in greater variance.
+
+    -   **Training error**: Training error is the squared difference between the predicted data and the actual data. Increasing flexibility of the function means that data can be estimated closer to the actual data points and training error diminishes.
+
+    -   **Test error**: Test error is the squared-bias + variance + irreducible error. Because it is additive error, test error is minimized at moderate levels of flexibility where squared bias and variance are minimized. Test error is high at low and high flexibility because of high squared bias and variance, respectively.
+
+    -   **Bayes error**: Bayes error is also called the irreducible error and is constant across levels of flexibility.
+
+<!-- -->
+
+4.  You will now think of some real-life applications for statistical learning.
+
+    a\. Describe three real-life applications in which *classification* might be useful. Describe the response, as well as the predictors. Is the goal of each application inference or prediction? Explain your answer.
+
+    -   Disease classification: cancer, diabetes, neurological disease. The response is disease or no disease. predictors can be laboratory, physical exam, and lifestyle (diet, exercise, drug use) factors. An application that strictly looks at clinical data could be inferential (what characteristics are associated with disease/ no disease), an application that looks at lifestyle could be predictive (what lifestyle characters are predictive of disease/ no disease).
+
+    -   Buy or sell stocks. The response is stocks that were bought or sold. The predictors would be stock price history over a length of time. The goal would be to predict the future performance of a stock and decide whether to buy or sell the stock.
+
+    -   Manufacturing: Image analysis of production line items or test data analysis of production line items to assign passing or defective items. Response is passing (matches standard image or within tolerable range of test data set) or fail (not matching image or test data set). Predictors would be several point images of the item or several testing metrics. The goal of the application would be to infer production item quality.
+
+    -   
+
+    b\. Describe three real-life applications in which regression might be useful. Describe the response, as well as the predictors. Is the goal of each application inference or prediction? Explain your answer.
+
+    -   Clinical outcomes of a drug study. The response would be recovered or disease free patients over time after taking a drug. Predictors would be the drug level, physical and lab exam measures. The goal of the application would be to track the effectiveness of a drug and prediction of health span of patients who have taken the drug.
+
+    -   Environmental factors and pest insect hatch rate. The response would be the rate of hatching of pest insects. Predictors could be degree days, rainfall, availability of host plant or animal. The goal would be to predict the rate of insect hatching based on monitoring environmental factors.
+
+    -   Sugar consumption and insulin resistance. The response would be insulin tolerance in adults. Predictors would be the quantity of sugar consumed each day along with physical and lab exam tests. The goal would be to infer the relationship between sugar consumption and development of insulin resistance.
+
+    -   
+
+    c\. Describe thre real-life applications for which *cluster analysis* might be useful.
+
+    -   Disease outbreak management. Track location of disease cases to determine localities that need intervention resources.
+
+    -   Gene expression studies. Cluster genes that are differentially expressed under different conditions.
+
+    -   Marketing demographics. Cluster products purchased by consumers who fit different demographic characters.
+
+    5.  What are the advantages and disadvantages of a very flexible (versus a less flexible) approach for regression or classification? Under what circumstances might a more flexible approach be preferred to a less flexible approach? When might a less flexible approach be preferred?
+
+        | Advantages               | Disadvantages                           |
+        |--------------------------|-----------------------------------------|
+        | Reduced bias             | Can be hard to interpret                |
+        | Leverage large data sets | More risk of overfitting                |
+        |                          | Training is tricky (avoid over fitting) |
+        |                          | Takes more computational power          |
+
+        : Advantages and Disadvantages of a very flexible approach
+
+        | Prefer more flexible                                          | Prefer less flexible             |
+        |----------------------------------------------|--------------------------|
+        | Large sample size                                             | Small sample size                |
+        | Small number of predictors                                    | Large number of predictors       |
+        | Non-linear relationship between predictor(s) and response(s). | A high amount of error variance. |
+
+        : Advantage of more flexible and less flexible approches
+
+<!-- -->
+
+6.  Describe the differences between a parametric and a non-parametric statistical learning approach. What are the advantages of a parametric approach to regression or classification (as opposed to a non-parametric approach? What are its disadvantages?
+
+    -   Parametric models make an assumption about the form of the function. For example a parametric model may assume that the predictor and outcome have a linear relationship. This assumption is not part of non-parametric models. Parametric models reduce the problem of estimating the functional relationships of a data set down to a few parameters. So the advantage is in simplification; you only need to estimate the values of a few defined parameters. Parametric models have a disadvantage in that they may not accurately describe the true functional relationships in a data set.
+
+    1.  The table below provides a training data set containing six observations, three predictors, and one qualitative response variable.
+
+        | Obs. | X~1~ | X~2~ | X~3~ | Y     |
+        |------|------|------|------|-------|
+        | 1    | 0    | 3    | 0    | Red   |
+        | 2    | 2    | 0    | 0    | Red   |
+        | 3    | 0    | 1    | 3    | Red   |
+        | 4    | 0    | 1    | 2    | Green |
+        | 5    | -1   | 0    | 1    | Green |
+        | 6    | 1    | 1    | 1    | Red   |
+
+    Suppose we wish to use this data set to make a prediction for Y when X~1~ = X~2~ = X~3~ = 0 using K-nearest neighbors.
+
+    1.  Compute the Euclidean distance between each observation and the test point, X~1~ = X~2~ = X~3~ = 0.
+
+        -   The distance between two points in 3-dimensions is:
+
+            $AB = \sqrt{(x_2 - x_1)^2 + ((y_2 - y1)^2 + (z_2 - z_1)^2}$
+
+            For distance from $X_1 = X_2 = X_3 = 0,$
+
+            the formula reduces to: $\sqrt{x^2 + y^2 + z^2}$
+
+            | Obs. | X~1~ | X~2~ | X~3~ | Y     | Distance |
+            |------|------|------|------|-------|----------|
+            | 1    | 0    | 3    | 0    | Red   | 3        |
+            | 2    | 2    | 0    | 0    | Red   | 2        |
+            | 3    | 0    | 1    | 3    | Red   | 3.16     |
+            | 4    | 0    | 1    | 2    | Green | 2.24     |
+            | 5    | -1   | 0    | 1    | Green | 1.41     |
+            | 6    | 1    | 1    | 1    | Red   | 1.73     |
+
+            There is an R function, `dist()` that will compute the distance matrix for a given matrix. We could try the function and see what it produces. To do this, I added the
+
+            $X_1 = X_2 = X_3 = 0,$
+
+            as the first row of the matrix. In the output it will be "1" and the first column of the distance matrix will show the distance from "1" to the other six observations.
+
+```{r}
+x <- matrix(c(0, 0, 2, 0, 0, -1, 1, 0, 3, 0, 1, 1, 0, 1, 0, 0, 0, 3, 2, 1, 1), 7, 3)
+x
+```
+
+```{r}
+dist(x, method = "euclidean")
+```
+
+We see that the first column displays the distances of the six observations from 0, 0, 0.
+
+b.  What is our prediction with K = 1? Why?
+
+    -   We predict "Green" because the nearest neighbor is Observation 5 which is a distance of 1.41 from (0, 0, 0).
+
+c.  What is our prediction with K = 3? Why?
+
+    -   We predict "Red" because Oberservations 5-Red, 6-Green, and 2-Red are nearest. The majority of near objects are "Red" so the prediction is "Red".
+
+d.  If the Bayes decision boundary in this problem is highly non-linear, then would we expect the *best* value for K to be large or small? Why?
+
+    -   We would expect the best value of K to be small because as K increases, the Bayes decision boundary becomes more linear and less flexible.
+
+## *Applied*
+
+8.  This exercise relates to the `College` data set, which can be found in the file `College.csv` on the book website. It contains a number of variables for 777 different universities and colleges in the US. The variables are
+
+    -   `Private`: Public/ private indicator
+
+    -   `Apps`: Number of applications received
+
+    -   `Accept`: Number of applicants accepted
+
+    -   `Enroll`: Number of new students enrolled
+
+    -   `Top10perc`: New students from top 10% of high school class
+
+    -   `Top25perc`: New students from top 25% of high school class
+
+    -   `F.Undergrad`: Number of full-time undergraduates
+
+    -   `P.Undergrad`: Number of part-time undergraduates
+
+    -   `Outstate`: Out-of-state tuition
+
+    -   `Room.Board`: Room and board costs
+
+    -   `Books`: Estimated book costs
+
+    -   `Personal`: Estimated personal spending
+
+    -   `PhD`: Percent of faculty with Ph.D.'s
+
+    -   `Terminal`: Percent of faculty with terminal degree
+
+    -   `S.F.Ratio`: Student/ faculty ratio
+
+    -   `perc.alumni`: Percent of alumni who donate
+
+    -   `Expend`: Instructional expenditure per student
+
+    -   `Grad.Rate`: Graduation rate
+
+    Before reading the data into R, it can be viewed in Excel or a text editor.
+
+    a.  Use the `read.csv()` function to read the data into R. Call the loaded data `college`. Make sure that you have the directory set to the correct location for the data.
+
+```{r}
+college <- read.csv("data_sets/College.csv", header = T)
+```
+
+b.  Look at the data using the `View()` function.
+
+    ```{r}
+    View(college)
+    ```
+
+    You should notice that the first column is just the name of each university. We don't really want R to treat this as data. However, it may be handy to have these names for later. Try the following commands:
+
+    `rownames(college) <- college[, 1]`
+
+    `View(college)`
+
+    ```{r}
+    rownames(college) <- college[, 1]
+    View(college)
+    ```
+
+    You should see that there is now a row.names column with the name of each university recorded. This means that R has given each row a name corresponding to the appropriate university. R will not try to perform calculations on the row names. However, we still need to eliminate the first column in the data where the names are stored. Try
+
+    `college <- college[, -1]`
+
+    `View(college)`
+
+    ```{r}
+    college <- college[, -1]
+    View(college)
+    ```
+
+    Now you should see that the first data column is `Private`. Note that another column labeled `row.names` now appears before the `Private` column. However, this is not a data column but rather the name that R is giving to each row.
+
+c.  
+
+    i.  Use the `summary()` function to produce a numerical summary of the variables in the data set.
+
+    ```{r}
+    summary(college)
+    ```
+
+ii\. Use the `pairs()` function to produce a scatterplot matrix of the first ten columns or variables of the data. Recall that you can reference the first ten columns of a matrix `A` using `A[, 1:10]`.
+
+```{r}
+pairs(college[, 2:11])
+```
+
+iii\. Use the `plot()` function to produce side-by-side boxplots of `Outstate` versus `Private`.
+
+```{r}
+Private <- as.factor(Private)
+plot(Private, Outstate, col = "green", xlab = "Private", ylab = "Outstate scholars")
+```
+
+iv\. Create a new qualitative variable, called Elite, by *binning* the `Top10perc` variable. We are going to divide universities into two groups based on whether or not the proportion of students coming from the top 10% of their high school classes exceeds 50%.
+
+`Elite <- rep("No", nrow(college))`
+
+`Elite[college$Top10perc > 50] <- "Yes"`
+
+`Elite <- as.factor(Elite)`
+
+`college <- data.frame(college, Elite)`
+
+```{r}
+Elite <- rep("No", nrow(college)) #creates a vector called Elite with the same number of rows as college that is filled with "No".
+
+Elite[college$Top10perc > 50] <- "Yes" #assigns "Yes" to any row in Elite where more than 50% of the students were in the top 10% of their high school class.
+
+Elite <- as.factor(Elite) #makes the "Yes"/ "No" data into a factor.
+
+college <- data.frame(college, Elite) #combines college and Elite into a dataframe.
+```
+
+Use `summary()` function to see how many elite universities there are.
+
+```{r}
+summary(college)
+```
+
+-   There are 78 elite universities.
+
+Now use the `plot()` function to produce side-by-side boxplots of `Outstate` versus `Elite`.
+
+```{r}
+plot(Elite, Outstate, col = "maroon", xlab = "Elite Universities", ylab = "Outstate scholars")
+```
+
+v\. Use the `hist()` function to produce some histograms with differing numbers of bins for a few of the quantitative variables. You may find the command `par(mfrow = c(2, 2))` useful: it will divide the print window into four regions so that four plots can be made simultaneously. Modifying the arguments to this function will divide the screen in other ways.
+
+```{r}
+par(mfrow = c(2, 2))
+hist(Apps, col = 8, breaks = 50)
+hist(Accept, col = 7, breaks = 50)
+hist(Enroll, col = 6, breaks = 50)
+hist(Grad.Rate, col = 5, breaks = 50)
+```
+
+vi\. Continue exploring the data, and provide a brief summary of what you discover.
+
+-   I was interested in the factors associated with graduation rate. So first I looked at the scatterplot matrix for all of the variables:
+
+    ```{r}
+    pairs(college[,2:18])
+    ```
+
+    This can be viewed by clicking on the "show in new window" icon.
+
+-   Can see that these factors might have some association with graduation rate:
+
+    -   Number of applications received
+
+    -   Number of applications accepted
+
+    -   Number of new students enrolled
+
+    -   Number of new students from the top 10% of their highschool class
+
+    -   Number of new students from the top 25% of their highschool class
+
+    -   Number of full time undergraduates
+
+    -   The cost of outstate tuition
+
+    -   The cost of room and board
+
+    -   Percent of faculty with Ph.D. degree
+
+    -   Percent of faculty who hold a terminal degree in their field of study
+
+    -   The percent of alumni who donate
+
+    -   Instructional expenditure per student.
+
+I explored each of these:
+
+Number of applications received.
+
+```{r}
+plot(Apps, Grad.Rate)
+abline(reg = lm(Grad.Rate ~ Apps), col = "red")
+lines(lowess(Apps, Grad.Rate), col = "green")
+
+```
+
+Number of applications accepted
+
+```{r}
+plot(Accept, Grad.Rate)
+abline(reg = lm(Grad.Rate ~ Accept), col = "red")
+lines(lowess(Apps, Grad.Rate), col = "green")
+```
+
+Number of new students enrolled
+
+```{r}
+plot(Enroll, Grad.Rate)
+abline(reg = lm(Grad.Rate ~ Enroll), col = "red")
+lines(lowess(Enroll, Grad.Rate), col = "green")
+```
+
+Number of students from top 10% of their highschool class
+
+```{r}
+plot(Top10perc, Grad.Rate)
+abline(reg = lm(Grad.Rate ~ Top10perc), col = "red")
+lines(lowess(Top10perc, Grad.Rate), col = "green")
+
+```
+
+Number of new students from the top 25% of their highschool class
+
+```{r}
+plot(Top25perc, Grad.Rate)
+abline(reg = lm(Grad.Rate ~ Top25perc), col = "red")
+lines(lowess(Top25perc, Grad.Rate), col = "green")
+```
+
+Number of full-time undergraduates
+
+```{r}
+plot(F.Undergrad, Grad.Rate)
+abline(reg = lm(Grad.Rate ~ F.Undergrad), col = "red")
+lines(lowess(F.Undergrad, Grad.Rate), col = "green")
+```
+
+The cost of outstate tuition
+
+```{r}
+plot(Outstate, Grad.Rate)
+abline(reg = lm(Grad.Rate ~ Outstate), col = "red")
+lines(lowess(Outstate, Grad.Rate), col = "green")
+```
+
+Cost of room and board
+
+```{r}
+plot(Room.Board, Grad.Rate)
+abline(reg = lm(Grad.Rate ~ Room.Board), col = "red")
+lines(lowess(Room.Board, Grad.Rate), col = "green")
+```
+
+Percent of faculty who hold a Ph.D. degree
+
+```{r}
+plot(PhD, Grad.Rate)
+abline(reg = lm(Grad.Rate ~ PhD), col = "red")
+lines(lowess(PhD, Grad.Rate), col = "green")
+abline(v = 80, col = "magenta", lty = "dashed")
+```
+
+There may be an increase in graduation rate when 80% of the faculty hold a PhD.
+
+Percent of faculty who hold a terminal degree in their field
+
+```{r}
+plot(Terminal, Grad.Rate)
+abline(reg = lm(Grad.Rate ~ Terminal), col = "red")
+lines(lowess(Terminal, Grad.Rate), col = "green")
+```
+
+Percent of alumni who donate
+
+```{r}
+plot(perc.alumni, Grad.Rate)
+abline(reg = lm(Grad.Rate ~ perc.alumni), col = "red")
+lines(lowess(perc.alumni, Grad.Rate), col = "green")
+```
+
+Instructional expenditure per student
+
+```{r}
+plot(Expend, Grad.Rate)
+abline(reg = lm(Grad.Rate ~ Expend), col = "red")
+lines(lowess(Expend, Grad.Rate), col = "green")
+abline(v = 27000, col = "magenta", lty = "dashed")
+```
+
+So... you really don't get higher grad rate if you spend beyond \$27,000 per student.
+
+I was curious about the cost of being educated by PhDs in terms of expenditure per student
+
+```{r}
+plot(PhD, Expend)
+abline(reg = lm(Expend ~ PhD), col = "red", lwd = 3)
+lines(lowess(PhD, Expend), col = "green", lwd = 3)
+abline(h = 27000, col = "magenta", lty = "dotted", lwd = 3)
+abline(v = 75, col = "magenta", lty = "dotted", lwd = 3)
+```
+
+And whether schools that have more PhD faculty attract the top students
+
+```{r}
+plot(PhD, Top10perc)
+abline(reg = lm(Top10perc ~ PhD), col = "red", lwd = 3)
+lines(lowess(PhD, Top10perc), col = "green", lwd = 3)
+abline(v = 75, col = "magenta", lty = "dashed", lwd = 3)
+abline(h = 23, col = "magenta", lty = "dashed", lwd = 3)
+```
+
+From my walk-about I would conclude that you can maintain high graduation rates by admitting greater than 23 percent of incoming students who are in the top 10 percent of their highschool class, hire a faculty composed of at least 75% PhDs, and spend up to \$27,000 per student. The missing information here is tuition. It would be interesting to see what proportion tuition goes directly to instructional costs.
+
+9.  This exercise involves the `Auto` data set studie in the lab. Make sure that the missing values have been removed from the data.
+
+```{r}
+Auto <- na.omit(Auto)
+dim(Auto)
+names(Auto)
+```
+
+i.  Which of the predictors are quantitative, and which are qualitative?
+
+    -   Quantitative: mpg, cylinders, displacement, horsepower, weight, acceleration, year
+
+    -   Qualitative: origin, name. I included origin here because it seems to be categorical (1, 2, or 3).
+
+ii. What is the range of each quantitative predictor? You can answer this using the `range()` function.
+
+    ```{r}
+    range(Auto["mpg"])
+    range(Auto["cylinders"])
+    range(Auto["displacement"])
+    range(Auto["horsepower"])
+    range(Auto["weight"])
+    range(Auto["acceleration"])
+    range(Auto["year"])
+    ```
+
+    A quick way to get a table of this information all at once is to make a table. This can be done using the `sapply(object, range)` function.
+
+    ```{r}
+    sapply(Auto[,1:7], range)
+    ```
+
+| Predictor    | Min  | Max  |
+|--------------|------|------|
+| mpg          | 9.0  | 46.6 |
+| cylinders    | 3    | 8    |
+| displacement | 68   | 455  |
+| horsepower   | 46   | 230  |
+| weight       | 1613 | 5140 |
+| acceleration | 8.0  | 24.8 |
+| year         | 1970 | 1982 |
+
+iii\. What is the mean and standard deviation of each quantitative predictor?
+
+```{r}
+sapply(Auto[,1:7], mean)
+sapply(Auto[,1:7], sd)
+```
+
+| Predictor    | Mean    | Standard Deviation |
+|--------------|---------|--------------------|
+| mpg          | 23.45   | 7.80               |
+| cylinders    | 5.47    | 1.71               |
+| displacement | 194.41  | 104.64             |
+| horsepower   | 104.47  | 38.49              |
+| weight       | 2977.58 | 849.4              |
+| acceleration | 15.54   | 2.76               |
+| year         | 1975.98 | 3.68               |
+
+iv\. Now remove the 10th through 85th observations. What is the range, mean, and standard deviation of each predictor in the subset of the data that remains?
+
+```{r}
+Auto_subset <- Auto[-(10:85),]
+dim(Auto_subset)
+sapply(Auto_subset[,1:7], range)
+sapply(Auto_subset[,1:7], mean)
+sapply(Auto_subset[,1:7], sd)
+```
+
+| Predictor    | Min  | Max  | Mean    | Standard Deviation |
+|--------------|------|------|---------|--------------------|
+| mpg          | 11.0 | 46.6 | 24.4    | 7.87               |
+| cylinders    | 3    | 8    | 5.37    | 1.65               |
+| displacement | 68   | 455  | 187.24  | 99.68              |
+| horsepower   | 46   | 230  | 100.72  | 35.71              |
+| weight       | 1649 | 4997 | 2935.97 | 811.3              |
+| acceleration | 8.5  | 24.8 | 15.73   | 2.69               |
+| year         | 1970 | 1982 | 1977.15 | 3.11               |
+
+v\. Using the full data set, investigate the predictors graphically, using scatterplots or other tools of your choice. Create some plots highlighting the relationships among the predictors. Comment on your findings.
+
+```{r}
+pairs(Auto)
+```
+
+```{r}
+par(mfrow = c(4, 2))
+hist(year, main = "Number of Autos in each year", xlab = "Year", ylab = "Numbers")
+plot(year, mpg, main = "Raw mpg data by year", xlab = "Year", ylab = "Miles Per Gallon")
+lines(lowess(year, mpg), col = "red")
+boxplot(mpg ~ year,data=Auto, main="Gas Mileage by Year",
+   xlab="Year", ylab="Miles Per Gallon")
+boxplot(mpg ~ cylinders, data = Auto, main = "Gas Mileage by Number of Cylinders", xlab = "Number of cylinders", ylab = "Miles Per Gallon")
+plot(displacement, mpg, main = "Gas Mileage by Displacement", xlab = "Displacement", ylab = "Miles Per Gallon")
+lines(lowess(displacement, mpg), col = "red")
+plot(horsepower, mpg, main = "Gas Mileage by Horsepower", xlab = "Horsepower", ylab = "Miles Per Gallon")
+lines(lowess(horsepower, mpg), col = "red")
+plot(weight, mpg, main = "Gas Mileage by Weight", xlab = "Weight", ylab = "Miles Per Gallon")
+lines(lowess(weight, mpg), col = "red")
+```
+
+```{r}
+par(mfrow = c(2,2))
+plot(cylinders, displacement, main = "Displacement by Number of cylinders", xlab = "Number of Cylinders", ylab = "Displacement")
+plot(cylinders, horsepower, main = "Horsepower by Number of cylinders", xlab = "Number of cylinders", ylab = "Horsepower")
+plot(cylinders, weight, main = "Weight by number of cylinders", xlab = "Number of Cylinders", ylab = "Weight")
+plot(cylinders, acceleration, main = "Acceleration by number of cylinders", xlab = "Number of Cylinders", ylab = "Acceleration")
+```
+
+```{r}
+par(mfrow = c(2,2))
+plot(displacement, horsepower, main = "Horsepower by Displacement", xlab = "Displacement", ylab = "Horsepower")
+lines(lowess(displacement, horsepower), col = "red")
+plot(displacement, weight, main = "Weight by Displacement", xlab = "Displacement", ylab = "Weight")
+lines(lowess(displacement, weight), col = "red")
+plot(displacement, acceleration, main = "Acceleration by Displacement", xlab = "Displacement", ylab = "Acceleration")
+lines(lowess(displacement, acceleration), col = "red")
+
+```
+
+```{r}
+par(mfrow = c(1,2))
+plot(weight, horsepower, main = "Horsepower by Weight", xlab = "Horsepower", ylab = "Weight")
+lines(lowess(weight, horsepower), col = "red")
+plot(horsepower, acceleration, main = "Accelertion by Horsepower", xlab = "Horsepower", ylab = "Acceleration")
+lines(lowess(horsepower, acceleration), col = "red")
+
+```
+
+```{r}
+plot(weight, acceleration, main = "Acceleration by Weight", xlab = "Weight", ylab = "Acceleration")
+lines(lowess(weight, acceleration), col = "red")
+```
+
+If gas mileage increased over years then what factors changed to affect the increase?
+
+```{r}
+par(mfrow = c(2,2))
+boxplot(displacement ~ year,data=Auto, main="Change in Engine Displacement",
+   xlab="Year", ylab="Engine Displacement")
+boxplot(horsepower ~ year, data = Auto, main = "Change in Horsepower", xlab = "Year", ylab = "Horsepower")
+boxplot(weight ~ year, data = Auto, main = "Change in Vehicle Weight", xlab = "Year", ylab = "Vehicle Weight")
+boxplot(mpg ~year, data = Auto, main = "Change in Miles Per Gallon", xlab = "Year", ylab = "Miles Per Gallon")
+```
+
+From 1970 to 1982, engines became smaller, with lower horsepower, and vehicle weight decreased. The result was increased fuel efficiency. The big change came in 1980 when it looks like a reduced variety of engines were made available.The Corporate Average Fuel Economy (CAFE) standards were made into law in 1975 and were phased in in the early 1980s. The data clearly show the dramatic effect of the standards beginning in 1980.
+
+vi\. Suppose that we wish to predict gas mileage (`mpg`) on the basis of the other variables. Do your plots suggest that any of the other variables might be useful in predicting `mpg`? Justify your answer.
+
+-   As seen above in part (v.), engine displacement, horsepower, and vehicle weight are inversely related to gas mileage. These variables (predictors) would likely be very useful in a model that predicts gas mileage.
+
+10. The exercise involves the `Boston` housing data set.
+    i.  To begin, load in the `Boston` data set. The `Boston` data set is part of the `ISLR2` *library.*
+
+```{r}
+library(ISLR2)
+```
+
+Now the data set is contained in the object `Boston.`
+
+```{r}
+Boston
+```
+
+Read about the data set:
+
+```{r}
+?Boston
+```
+
+    Boston
+
+### Format
+
+A data frame with 506 rows and 13 variables.
+
+`crim`
+
+:   per capita crime rate by town.
+
+`zn`
+
+:   proportion of residential land zoned for lots over 25,000 sq.ft.
+
+`indus`
+
+:   proportion of non-retail business acres per town.
+
+`chas`
+
+:   Charles River dummy variable (= 1 if tract bounds river; 0 otherwise).
+
+`nox`
+
+:   nitrogen oxides concentration (parts per 10 million).
+
+`rm`
+
+:   average number of rooms per dwelling.
+
+`age`
+
+:   proportion of owner-occupied units built prior to 1940.
+
+`dis`
+
+:   weighted mean of distances to five Boston employment centres.
+
+`rad`
+
+:   index of accessibility to radial highways.
+
+`tax`
+
+:   full-value property-tax rate per \$10,000.
+
+`ptratio`
+
+:   pupil-teacher ratio by town.
+
+`lstat`
+
+:   lower status of the population (percent).
+
+`medv`
+
+:   median value of owner-occupied homes in \$1000s.
+
+### Source
+
+This dataset was obtained from, and is slightly modified from, the Boston dataset that is part of the MASS library. References are available in the MASS library.
+
+### References
+
+James, G., Witten, D., Hastie, T., and Tibshirani, R. (2013) *An Introduction to Statistical Learning with applications in R*, [https://www.statlearning.com](https://www.statlearning.com/), Springer-Verlag, New York
+
+### Examples
+
+[Run examples](http://127.0.0.1:59285/help/library/ISLR2/Example/Boston)
+
+    lm(medv ~ crim + rm, data=Boston)
+
+\
+How many rows are in the data set? How many columns? What do the rows and columns represent
+
+```{r}
+dim(Boston)
+```
+
+-   There are 506 rows and 13 columns. The rows represent individual observations and the columns represent the variables.
+
+ii\. Make some pairwise scatterplots of the predictors (columns) in this data set. Describe your findings.
+
+```{r}
+pairs(Boston)
+```
+
+It looks like there are some clear relationships. For example, (lstat and medv), (rm and medv), (dis and nox), and (age and nox) have pretty clear relationships.
+
+iii\. Are any of the predictors associated with per capita crime rate? If so, explain the relationship.
+
+```{r}
+par(mfrow = c(4, 2))
+plot(Boston$nox, Boston$crim)
+
+plot(Boston$age, Boston$crim)
+
+plot(Boston$rad, Boston$crim)
+plot(Boston$tax, Boston$crim)
+```
+
+Crime rate is higher where dwelling size is smaller
+
+```{r}
+plot(Boston$rm, Boston$crim, main = "Crime rate by dwelling size", xlab = 
+"Rooms per dwelling", ylab = "Crime rate")
+```
+
+Crime rate is higher where there is a larger proportion of old housing.
+
+```{r}
+plot(Boston$age, Boston$crim, main = "Crime rate by proportion of old housing", xlab = "Proportion of housing built before 1940", ylab = "Crime rate")
+```
+
+```{r}
+plot(Boston$dis, Boston$crim, main = "Crime rate by distance to employment centre", xlab = "Mean distance to employment centre", ylab = "Crime rate")
+
+```
+
+Crime rate is lower where residential lots are large
+
+```{r}
+plot(Boston$zn, Boston$crim, main = "Crime rate by size of residential lot", xlab = "Proportion of lots over 25,000 sq ft", ylab = "Crime rate")
+```
+
+Crime rate is associated with a very specific level of industry proportion. Therefore I don't think that "indus" is a good predictor variable.
+
+```{r}
+plot(Boston$indus, Boston$crim, main = "Crime rate by proportion of industrial acreage", xlab = "Proportion industrial", ylab = "Crime rate")
+```
+
+Crime rate is associated with polution.
+
+```{r}
+plot(Boston$nox, Boston$crim, main = "Crime rate by polution", xlab = "Nitrogen oxides concentration (parts per 10 million)", ylab = "Crime rate")
+```
+
+Crime rate is higher where highway access is farthest away.
+
+```{r}
+plot(Boston$rad, Boston$crim, main = "Crime rate by accessibility of highway access", xlab = "accessibility of radial highways", ylab = "Crime rate")
+```
+
+Crime rate is highest where the tax rate is highest.
+
+```{r}
+plot(Boston$tax, Boston$crim, main = "Crime rate by tax rate", xlab = "Tax rate index", ylab = "Crime rate")
+```
+
+Crime rate is higher when the ration of pupils to teachers is high.
+
+```{r}
+plot(Boston$ptratio, Boston$crim, main = "Crime rate by the pupil: teacher ratio", xlab = "Pupil: Teacher Ratio", ylab = "Crime rate")
+```
+
+Crime rate is higher with higher lower status of the population.
+
+```{r}
+plot(Boston$lstat, Boston$crim, main = "Crime rate by lower status of the population", xlab = "Lower status of the population", ylab = "Crime rate")
+```
+
+Crime rate is higher when home value us lower.
+
+```{r}
+plot(Boston$medv, Boston$crim, main = "Crime rate by median home value", xlab = "Median home value", ylab = "Crime rate")
+```
+
+iv\. Do any of the census tracts of Boston appear to have particularly high crime rates? Tax rates? Pupil-teacher ratios? Comment on the range of each predictor.
+
+```{r}
+par(mfrow=c(1,3))
+hist(Boston$crim[Boston$crim>1], breaks=25, xlab = "Crime Rate", ylab = "Number of suburbs", main = "Boston crime rates")
+hist(Boston$tax, breaks = 25, xlab = "Tax rate", main = "Boston Tax Rate", ylab = "Number of suburbs")
+hist(Boston$ptratio, breaks = 25, xlab = " Pupil: Teacher ratio", main = "Pupil: Teacher", ylab = "Number of suburbs")
+```
+
+Yes, there are 18 or so places that have higher crime rate. Crime rates are generally under 10%.
+
+```{r}
+range(Boston$crim)
+```
+
+Yes, several communities have very high tax rates compared to others. The tax rate appears to range from 187 to about 450 for most suburbs. A number of very high, tax-rate suberbs appear as outliers to the rest.
+
+```{r}
+range(Boston$tax)
+```
+
+Yes, several suburbs have greater than 20 students per teacher. The distribution is slightly skewed toward higher ratios but one ratio (about 20:1) dominates.
+
+```{r}
+range(Boston$ptratio)
+```
+
+v\. How many census tracts in this data set bound the Charles river?
+
+```{r}
+
+dim(subset(Boston, chas == 1))
+```
+
+The answer is returned as rows, columns so 35 of the 506 Boston suburbs bound the Charles river.
+
+vi\. What is the median pupil-teacher ratio among the towns in this data set?
+
+```{r}
+median(Boston$ptratio)
+```
+
+The median pupil-teacher ratio is 19.05
+
+vii\. Which census tract of Boston has lowest median value of owner-occupied homes?
+
+```{r}
+# First I looked a summary of the medv column to find the minimum value.
+summary(Boston$medv)
+```
+
+```{r}
+# Then I looked for the row number corresponding to the minimum value
+which(Boston$medv == min(Boston$medv))
+```
+
+Census tracts 399 and 406 have the lowest median value of owner-occupied homes.
+
+What are the values of the other predictors for that census tract, and how do those values compare to the overall ranges fo rthose predictors?
+
+First I summarize the data:
+
+```{r}
+summary(Boston)
+```
+
+Then I get the values for the two census tracts (399 and 406)
+
+```{r}
+lowest <- subset(Boston, medv == min(Boston$medv))
+lowest
+```
+
+That would maybe be nicer to read if it were transposed so that the predictors are in rows and the census tracts in the columns.
+
+```{r}
+t(lowest)
+```
+
+Crime Rate: Both have higher than average crime rates.
+
+Zoning: Below the mean for zoning large residential lots.
+
+Industry: Very industrial, in the 3rd quartile.
+
+Not by the Charles river. Maybe that means somethingto someone from Boston.
+
+Nitrogen Oxides: High level of pollution, in the 3rd quartile.
+
+Size of dwellings: In the first quartile so homes are not big.
+
+Age: All of the housing was built before 1940, so older homes.
+
+Distance to employment centers: Very close to employment centers.
+
+Distance to radial highways: In the 3rd quartile, so quite distance from radial highways.
+
+Taxes: In the third quartile so quite high taxes.
+
+Pupil to teacher ratio: In the third quartile with about 20 pupils to every one teacher.
+
+Lower status of population: A relatively high proportion of the population fits into this category
+
+Overall, 399 and 406 look like a very poor place to live.
+
+viii\. In this data set, how many of the census tracts average more than seven rooms per dwelling?
+
+```{r}
+dim(subset(Boston, rm > 7))
+```
+
+64 census tracts average more than 7 rooms per dwelling.
+
+More than eight rooms per dwelling?
+
+```{r}
+dim(subset(Boston, rm > 8))
+```
+
+13 census tracts average more than 8 rooms per dwelling.
+
+Comment on the census tracts that average more than eight rooms per dwelling.
+
+```{r}
+summary(subset(Boston, rm > 8))
+```
+
+The census tracts that have on average more than eight rooms per dwelling are characterized by lower crime rate, more property zoned for large homes, less industry, a larger proportion of property along the Charles river, a slightly higher proportion of homes built before 1940, slightly closer to radial highways, slightly lower pupil to teacher ratios, much lower percent of population in lower status, and a median home value about twice that of the average for all of these predictors.
