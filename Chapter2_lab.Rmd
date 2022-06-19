@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-I this lab we are introduced to some simple R commands.
+In this lab we are introduced to some simple R commands.
 
 ### **2.3.1**
 
