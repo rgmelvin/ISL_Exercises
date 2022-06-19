@@ -3,3 +3,9 @@ My follow along with examples and exercises in "An  Introduction to Statistical 
 
 Tech employed is R.
 This is satisfying my hunger to understand statistical learning models.
+
+
+Technologies
+R
+R Studio
+R markdown
